@@ -20,6 +20,27 @@ void posicionarNavio(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int co
     }
 }
 
+void aplicarHabilidade(int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO], int x, int y, char tipo) {
+    if (tipo == 'C') { // Cruz
+        for (int i = -1; i <= 1; i++) {
+            if (x + i >= 0 && x + i < TAMANHO_TABULEIRO) tabuleiro[x + i][y] = 1;
+            if (y + i >= 0 && y + i < TAMANHO_TABULEIRO) tabuleiro[x][y + i] = 1;
+        }
+    } else if (tipo == 'O') { // Octaedro
+        if (x > 0) tabuleiro[x - 1][y] = 1;
+        if (x < TAMANHO_TABULEIRO - 1) tabuleiro[x + 1][y] = 1;
+        if (y > 0) tabuleiro[x][y - 1] = 1;
+        if (y < TAMANHO_TABULEIRO - 1) tabuleiro[x][y + 1] = 1;
+    } else if (tipo == 'N') { // Cone
+        if (x > 1) tabuleiro[x - 2][y] = 1;
+        if (x > 0) {
+            if (y > 0) tabuleiro[x - 1][y - 1] = 1;
+            tabuleiro[x - 1][y] = 1;
+            if (y < TAMANHO_TABULEIRO - 1) tabuleiro[x - 1][y + 1] = 1;
+        }
+    }
+}
+
 int main() {
     int tabuleiro[TAMANHO_TABULEIRO][TAMANHO_TABULEIRO] = {0};
     
@@ -34,6 +55,11 @@ int main() {
     posicionarNavio(tabuleiro, navioHorizontal, TAMANHO_NAVIO);
     posicionarNavio(tabuleiro, navioDiagonal1, TAMANHO_NAVIO);
     posicionarNavio(tabuleiro, navioDiagonal2, TAMANHO_NAVIO);
+    
+    // Aplicar habilidades especiais
+    aplicarHabilidade(tabuleiro, 4, 4, 'C'); // Cruz no centro
+    aplicarHabilidade(tabuleiro, 2, 7, 'O'); // Octaedro
+    aplicarHabilidade(tabuleiro, 8, 2, 'N'); // Cone
     
     // Exibir tabuleiro completo
     exibirTabuleiro(tabuleiro);
